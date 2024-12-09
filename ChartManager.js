@@ -40,7 +40,6 @@ function addUploadListener() {
             // Test Started Time
             var dateTimeOfTest_Excel = json.map(row => row['Started']);
             dateTimeOfTest = dateTimeOfTest_Excel.map(convertExcelDateToJSDate);
-            console.log(dateTimeOfTest);
             // Quote Opening Time
             var quoteOpeningTime_Excel = json.map(row => row['QuoteOpening']);
             quoteOpeningTime = convertExcelToSeconds(quoteOpeningTime_Excel);
@@ -72,7 +71,7 @@ function addUploadListener() {
             var priceCalculationTime_Excel = json.map(row => row['PriceCalculation']);
             priceCalculationTime = convertExcelToSeconds(priceCalculationTime_Excel);
             //
-            updateChart();
+            update();
         };
 
         reader.readAsArrayBuffer(file);
@@ -221,9 +220,17 @@ function updateChart() //create a new dataset
     createdChart.update(); //update the chart
 }
 
-function convertExcelDateToJSDate(excelDate) {
+function convertExcelDateToJSDate(excelDate, winterTime) {
     const excelEpoch = new Date(1900, 0, 1);
-    return new Date(excelEpoch.getTime() + (excelDate - 1) * 86400 * 1000);
+    let jsDate = new Date(excelEpoch.getTime() + (excelDate - 1) * 86400 * 1000);
+
+    /*
+    // Adjust for winter time if 'winterTime' is true
+    if (winterTime) {
+        jsDate.setHours(jsDate.getHours() - 1); // Adjust by -1 hour for winter time
+    }*/
+
+    return jsDate;
 }
 
 function convertExcelToSeconds(excelTime) {
@@ -239,7 +246,6 @@ function convertExcelToSeconds(excelTime) {
 }
 
 function calculateStartTime() {
-    timeWindow = "last year";
     const startTime = new Date(); // Current date and time
     switch (timeWindow) {
         case "last 24h":
