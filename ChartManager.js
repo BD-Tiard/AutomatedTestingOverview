@@ -71,12 +71,12 @@ function addUploadListener() {
             // Price Calculation Time
             var priceCalculationTime_Excel = json.map(row => row['PriceCalculation']);
             priceCalculationTime = convertExcelToSeconds(priceCalculationTime_Excel);
+            //
+            updateChart();
         };
 
         reader.readAsArrayBuffer(file);
     });
-    //
-    updateChart();
 }
 
 function getLabels(startIndex) {
@@ -84,8 +84,6 @@ function getLabels(startIndex) {
 }
 
 function getData(startIndex) {
-    console.log("quoteOpeningTime.slice(startIndex):");
-    console.log(quoteOpeningTime.slice(startIndex));
     return {
         labels: getLabels(),
         datasets: [
@@ -166,14 +164,8 @@ function getData(startIndex) {
 function createChart() {
 
     var startTime = calculateStartTime();
-    console.log("startTime:");
-    console.log(startTime);
-    console.log("dateTimeOfTest:");
-    console.log(dateTimeOfTest);
     // Find the index of the first entry after the start Date of the time window
     var startIndex = dateTimeOfTest.findIndex(date => date >= startTime);
-    console.log("getLabels(startIndex):");
-    console.log(getLabels(startIndex));
 
     const config = {
         type: "line",
