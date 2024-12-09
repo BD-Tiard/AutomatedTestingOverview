@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <title>CAMOS Performance</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="bootstrap.css">
+  <script src="UserInput.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.min.js"
+    integrity="sha384-ODmDIVzN+pFdexxHEHFBQH3/9/vQ9uori45z4JjnFsRydbmQbmL5t1tQ0culUzyK"
+    crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"
+    integrity="sha512-ElRFoEQdI5Ht6kZvyzXhYG9NqjtkmlkfYk0wr6wHxU9JEHakS7UJZNeml5ALk+8IKlU6jDgMabC3vkumRokgJA=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.9.2/umd/popper.min.js"
+    integrity="sha512-2rNj2KJ+D8s1ceNasTIex6z4HWyOnEYLVC3FigGOmyQCZc2eBXKgOxQmo3oKLHyfcj53uz4QMsRCWNbLd32Q1g=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+</head>
+
+<body onload="addUploadListener();
+  ">
+
+
+  <h2 class="p-3 bg-primary text-white text-left">
+    CAMOS Automated Performance Tests
+  </h2>
+  <div style="margin-left: 20px">
+    <div class="row">
+      <!-- left side -->
+      <div class="col-md-2 float-left">
+        <!-- Button triggering the modal -->
+        <button class="float-right btn btn-primary p-1" data-bs-toggle="modal" data-bs-target="#advancedSettingsModal"
+          title="Advanced/Quick Settings" onclick="showCurrentAdvancedSettings()">&#x2699</button>
+
+        <!-- Settings -->
+        <form>
+          <h3 class="text-secondary text-left">
+            Settings
+          </h3>
+          <div class="form-group" style="margin-bottom: 12px">
+            <label for="timeWindow" title="">Timeframe</label>
+            <input class="form-control" id="timeWindow" value="last 24h" onfocusout="validity.valid||(value='');"
+              disabled>
+          </div>
+          <div class="form-group" style="margin-bottom: 12px">
+            <label for="winterTime" title="Wintertime">Winter Time?</label>
+            <input type="checkbox" class="form-control" id="winterTime">
+          </div>
+          <input type="file" id="upload" accept=".xlsx, .xls">
+          <br>
+          <br>
+          <button type="button" class="float-right btn btn-primary" onclick="updateChart()">Update</button>
+        </form>
+      </div>
+      <!-- right side -->
+      <div class="col-lg" style="margin-right: 10px;">
+        <!-- Graph -->
+        <div>
+          <canvas id="ChartCanvas" width="512" height="156"
+            style="display: block; width: 512px; height: 156px;"></canvas>
+          <script src="ChartManager.js"></script>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Advanced Settings Modal -->
+  <div class="modal fade" id="advancedSettingsModal" tabindex="-1" role="dialog"
+    aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalCenterTitle">Advanced Settings</h5>
+          <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="form-group">
+            <label for="birdSpecies">Bird Species</label>
+            <button type="button" class="float-right btn btn-secondary" onclick="setDefaultAdvancedSettings()">Return to
+              Default</button>
+            <br>
+            <select class="form-select form-select-sm" style="margin-bottom: 0px" id="birdSpecies"
+              aria-label=".form-select-sm example">
+              <option selected>select Species</option>
+              <option value="1">Broiler</option>
+              <option value="2">Turkey</option>
+            </select>
+          </div>
+          <div class="form-group" style="margin-bottom: 10px">
+            <label for="feedFactor" style="margin-bottom: 4px">Feed Factor</label>
+            <input type="number" class="form-control  form-control-sm" id="feedFactor" step="0.01" min="0.01"
+              onfocusout="validity.valid||(value='');">
+          </div>
+          <div class="form-group" style="margin-bottom: 10px">
+            <div style="opacity:0.0" class="float-left">IIIII</div>
+            <input class="form-check-input" type="checkbox" style="padding-left: 20" id="fixedCoopCO2checkbox">
+            <label for="fixedCoopCO2checkbox" style="margin-bottom: 4px"
+              title="Replaces the Coop CO2 with the value">fixed upper Limit Coop CO2</label>
+            <input type="number" class="form-control  form-control-sm" style="margin-bottom: 12px" id="fixedCoopCO2"
+              min="0" onfocusout="validity.valid||(value='');">
+          </div>
+          <div class="form-group" style="margin-bottom: 10px">
+            <div style="opacity:0.0" class="float-left">IIIII</div>
+            <input class="form-check-input" type="checkbox" style="padding-left: 20" id="fixedCoopHumidityCheckbox">
+            <label for="fixedCoopCO2checkbox" style="margin-bottom: 4px"
+              title="Replaces the Coop Humidity with the value">fixed upper Limit Coop Humidity</label>
+            <input type="number" class="form-control  form-control-sm" style="margin-bottom: 12px"
+              id="fixedCoopHumidity" min="0" onfocusout="validity.valid||(value='');">
+          </div>
+          <div class="form-group" style="margin-bottom: 10px">
+            <div style="opacity:0.0" class="float-left">IIIII</div>
+            <input class="form-check-input" type="checkbox" style="padding-left: 20" id="fixedCoopTemperatureCheckbox">
+            <label for="coopTemperatureForMatureBirds" style="margin-bottom: 4px"
+              title="The Coop Temperature falls in 0.5 steps from the first value to the second">The temperature falls
+              from the first value to the second</label>
+            <input type="number" class="form-control  form-control-sm" style="margin-bottom: 12px"
+              id="coopTemperatureForYoungBirds" title="Coop Temperature for young Birds" min="0"
+              onfocusout="validity.valid||(value='');">
+            <input type="number" class="form-control  form-control-sm" style="margin-bottom: 12px"
+              id="coopTemperatureForMatureBirds" title="Coop Temperature for mature Birds" min="0"
+              onfocusout="validity.valid||(value='');">
+          </div>
+          <div class="form-group" style="margin-bottom: 10px">
+            <label for="heatingDeltaValue1" style="margin-bottom: 4px"
+              title="Heating Delta before the Breakpoint">Allowed Temp Delta for Heating Value1</label>
+            <input type="number" class="form-control  form-control-sm" style="margin-bottom: 12px"
+              id="heatingDeltaValue1" max="0" onfocusout="validity.valid||(value='');">
+          </div>
+          <div class="form-group" style="margin-bottom: 10px">
+            <label for="heatingDeltaValue2" style="margin-bottom: 4px"
+              title="Heating Delta after the Breakpoint">Allowed Temp Delta for Heating Value2</label>
+            <input type="number" class="form-control  form-control-sm" style="margin-bottom: 12px"
+              id="heatingDeltaValue2" max="0" onfocusout="validity.valid||(value='');">
+          </div>
+          <div class="form-group" style="margin-bottom: 10px">
+            <label for="heatingDeltaBreakpoint" style="margin-bottom: 4px"
+              title="Day after which the allowed heating Delta becomes the second value">HeatingDelta Breakpoint
+              Day</label>
+            <input type="number" class="form-control  form-control-sm" style="margin-bottom: 12px"
+              id="heatingDeltaBreakpoint" min="0" onfocusout="validity.valid||(value='');">
+          </div>
+          <!--
+        <div class="form-group" style="margin-bottom: 10px">
+          <label for="deltaTmaxHeat" style="margin-bottom: 4px" title="Delta at which the Fans start running max HeatVentilation">DeltaT max Heat</label>
+          <input type="number" class="form-control form-control-sm" id="deltaTmaxHeat" min="0" onfocusout="validity.valid||(value='');">
+        </div>
+        <div class="form-group" style="margin-bottom: 10px">
+          <label for="fanThroughputPerHour" style="margin-bottom: 4px" title="in m&#179/h">Airflow per Hour of a Fan</label>
+          <input type="number" class="form-control form-control-sm" id="fanThroughputPerHour" min="0" onfocusout="validity.valid||(value='');">
+        </div>
+        -->
+          <div class="form-group" style="margin-bottom: 10px">
+            <label for="airPressure" style="margin-bottom: 4px" itle="in Pa">Air Pressure</label>
+            <input type="number" class="form-control form-control-sm" id="airPressure" min="0"
+              onfocusout="validity.valid||(value='');">
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-primary" onclick="saveAdvancedSettings()">Save changes</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+
+</html>
