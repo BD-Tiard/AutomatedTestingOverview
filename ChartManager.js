@@ -89,22 +89,22 @@ function getData(startIndex) {
             {
                 data: quoteOpeningTime.slice(startIndex),
                 label: "Quote Opening",
-                backgroundColor: 'rgb(255, 163, 0)',
-                borderColor: 'rgb(255, 163, 0)',
+                backgroundColor: 'rgb(255, 0, 0)',
+                borderColor: 'rgb(255, 0, 0)',
                 //yAxisID: 'seconds',
             },
             {
                 data: alhCalculationTime.slice(startIndex),
                 label: "ALH Calculation",
-                backgroundColor: 'rgb(221, 87, 28)',
-                borderColor: 'rgb(221, 87, 28)',
+                backgroundColor: 'rgb(253, 126, 20)',
+                borderColor: 'rgb(253, 126, 20)',
                 //yAxisID: 'seconds',
             },
             {
                 data: waterSupplyCalculationTime.slice(startIndex),
                 label: "Water Supply Calculation",
-                backgroundColor: 'rgb(64, 160, 255)',
-                borderColor: 'rgb(64, 160, 255)',
+                backgroundColor: 'rgb(0, 123, 255)',
+                borderColor: 'rgb(0, 123, 255)',
                 //yAxisID: 'seconds',
             },
             {
@@ -131,29 +131,29 @@ function getData(startIndex) {
             {
                 data: climateCalculationTime.slice(startIndex),
                 label: "Climate Calculation",
-                backgroundColor: 'rgb(216, 36, 41)',
-                borderColor: 'rgb(216, 36, 41)',
+                backgroundColor: 'rgb(111, 66, 193)',
+                borderColor: 'rgb(111, 66, 193)',
                 //yAxisID: 'seconds',
             },
             {
                 data: manureBeltVentilationCalculationTime.slice(startIndex),
                 label: "Manure Belt Ventilation Calculation",
-                backgroundColor: 'rgb(216, 36, 41)',
-                borderColor: 'rgb(216, 36, 41)',
+                backgroundColor: 'rgb(232, 62, 140)',
+                borderColor: 'rgb(232, 62, 140)',
                 //yAxisID: 'seconds',
             },
             {
                 data: crossManureRemovalCalculationTime.slice(startIndex),
                 label: "Cross Manure Removal Calculation",
-                backgroundColor: 'rgb(216, 36, 41)',
-                borderColor: 'rgb(216, 36, 41)',
+                backgroundColor: 'rgb(52, 58, 64)',
+                borderColor: 'rgb(52, 58, 64)',
                 //yAxisID: 'seconds',
             },
             {
                 data: priceCalculationTime.slice(startIndex),
                 label: "Price Calculation",
-                backgroundColor: 'rgb(216, 36, 41)',
-                borderColor: 'rgb(216, 36, 41)',
+                backgroundColor: 'rgb(255, 193, 7)',
+                borderColor: 'rgb(255, 193, 7)',
                 //yAxisID: 'seconds',
             }
         ]
@@ -175,7 +175,7 @@ function createChart() {
                     type: 'linear', // Specify a valid scale type
                     position: 'right', // Position on the chart
                     suggestedMin: 0,
-                    suggestedMax: 60,
+                    suggestedMax: 30,
                     ticks: {
                         callback: function (value) {
                             return value + 's'; // Add 's' for seconds to tick labels
